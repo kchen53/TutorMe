@@ -5,17 +5,25 @@
 import json
 import os
 
+#Bot object that specializes in its own subject
 class bot:
-    def __init__(self, filename):
+    def __init__(self, filename, subject, date):
         self.filename = filename
+        self.subject = subject
+        self.date = date
+        self.data = {}
 
     #read from JSON file
     def read_json(self):
     #reads json file and converts the data into a python dictionary
-        with open(self.filename) as file:
-            data = json.load(file)
-
-        print(data)
+        try:
+            with open(self.filename, 'r') as file:
+                self.data = json.load(file)
+        
+        except (FileNotFoundError, json.JSONDecodeError):
+            self.data = {}
+            
+        print(self.data)
 
     #Write to JSON file 
     def write_json(self, new_data):
@@ -30,7 +38,11 @@ class bot:
         else:
             with open(self.filename, "w") as file:
                 json.dump(new_data, file, indent=4)
-       
+    
+    # def revision():
+    
+    # def flashcards():
+    
 
 #Testing
 dictionary = {
@@ -38,8 +50,7 @@ dictionary = {
     "answer": "kelly"
 }
 
-bot1 = bot("bot_response.json")
-
+bot1 = bot("bot_response.json", "math", "08/01/2024")
 bot1.read_json()
 
 bot1.write_json(dictionary)
