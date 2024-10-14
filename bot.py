@@ -4,6 +4,7 @@
 
 import json
 import os
+from difflib import get_close_matches
 
 #Bot object that specializes in its own subject
 class bot:
@@ -11,49 +12,39 @@ class bot:
         self.filename = filename
         self.subject = subject
         self.date = date
-        self.data = {}
 
     #read from JSON file
     def read_json(self):
-    #reads json file and converts the data into a python dictionary
-        try:
-            with open(self.filename, 'r') as file:
-                self.data = json.load(file)
+
+        with open(self.filename, 'r') as file:
+           data:dict = json.load(file)
+
+        print(data)
         
-        except (FileNotFoundError, json.JSONDecodeError):
-            self.data = {}
-            
-        print(self.data)
+        return data
 
     #Write to JSON file 
-    def write_json(self, new_data):
-
-        self.filename = input("Enter filename with .json extension: ")
+    def write_json(self, bot_knowledge):
         
-        if not os.path.exists(self.filename):
-
-            with open(self.filename, "w") as file:
-                json.dump(new_data, file, indent=4)
-        
-        else:
-            with open(self.filename, "w") as file:
-                json.dump(new_data, file, indent=4)
+        with open(self.filename, "w") as file:
+            json.dump(bot_knowledge, file, indent=2)
     
+    def find_best_answer(user_question, questions):
+        matches = get_close_matches(user_question, questions, n=1, cutoff=0.6)
+
+        if matches:
+            return matches[0]
+        else:
+            None
+
+    def get_answer(question, bot_knowledge):
+        for quest in bot_knowledge["questions"]:
+            if quest["question"] == question:
+                return quest["answer"]
+        
+        return None
+
     # def revision():
     
     # def flashcards():
-    
-
-#Testing
-dictionary = {
-    "question": "What is my name",
-    "answer": "kelly"
-}
-
-bot1 = bot("bot_response.json", "math", "08/01/2024")
-bot1.read_json()
-
-bot1.write_json(dictionary)
-bot1.read_json()
-
     
